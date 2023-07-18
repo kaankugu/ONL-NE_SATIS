@@ -20,12 +20,13 @@
             $.ajax({
                 url: "/api/login/",  
                 type: "POST",
-                data: {/* Giriş için gerekli verileri buraya yazın */},
+                data: {},
                 success: function(response) {
-                    var token = response.token;  // API'den dönen tokeni alın
+                    var token = response.access_token;
+                    print(token)
                     if (token) {
-                        window.location.href = "/home-page/"; w
-                    } // home-page URL'sini buraya yazın
+                        window.location.href = "/home-page/"; 
+                    }
     
                 },
                 error: function(error) {

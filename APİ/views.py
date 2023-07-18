@@ -18,11 +18,8 @@ class CustomLoginView(APIView):
 
     def post(self, request):
         username = request.data.get("username")
-        print(username)
         password = request.data.get("password")
-        print(username)
         user = authenticate(username=username, password=password)
-        print(user)
         
         if user is None or not user.is_active:
             return Response({'error': 'Invalid username or password'}, status=400)
