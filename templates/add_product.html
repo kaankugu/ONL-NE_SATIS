@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ürün Ekle</title>
+</head>
+<body>
+    <h1>Ürün Ekle</h1>
+    <form method="post" action="{% url 'product-create' %}" enctype="multipart/form-data">
+        <form enctype="multipart/form-data" method="POST" action="/your-action-endpoint/">
+
+        {% csrf_token %}
+        <label for="title">Ürün Adı:</label>
+        <input type="text" name="title" id="title" required><br><br>
+        <label for="description">Açıklama:</label>
+        <textarea name="description" id="description" required></textarea><br><br>
+        <label for="price">Fiyat:</label>
+        <input type="number" name="price" id="price" step="0.01" required><br><br>
+        <label for="image">Resim:</label>
+        <input type="file" name="image" accept="image/*" ><br><br>
+
+        <input type="submit" value="Kaydet">
+    </form>
+</body>
+</html>

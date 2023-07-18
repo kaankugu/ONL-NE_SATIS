@@ -14,25 +14,33 @@
         <label for="password">Şifre:</label>
         <input type="password" id="password" name="password" required><br><br>
         <button type="submit"  onclick ="redirect()">Giriş Yap</button>
+        
     </form>
     <script>
         function redirect() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            
             $.ajax({
-                url: "/api/login/",  
+                url: "/api/login/",
                 type: "POST",
-                data: {},
+                data: { username: username, password: password },
                 success: function(response) {
-                    var token = response.access_token;
-                    print(token)
-                    if (token) {
-                        window.location.href = "/home-page/"; 
-                    }
+
+                    const token = response.access_token;
+                    document.cookie = `apiData=${JSON.stringify({ access_token: token })}`;
+                    window.location.href = "/";
+
     
                 },
                 error: function(error) {
+                    console.error(error);
+
                 }
             });
-            
+            $(document).ready(function() {
+                handleUserLogin();  
+            })
         }
       </script>
 </body>
