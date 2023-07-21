@@ -1,3 +1,4 @@
+from urllib import response
 from django.shortcuts import render ,redirect 
 from rest_framework import generics
 from APİ.serializers import *
@@ -13,8 +14,13 @@ from rest_framework.parsers import MultiPartParser
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.http import HttpResponse
+import jwt
+from django.contrib.auth import logout
 
 
+def bag(request):
+    return render(request, "bag.html")
 
 def HomePage(request):
     return render(request, "home.html")
@@ -22,9 +28,8 @@ def HomePage(request):
 def Register(request):
     return render(request, "register.html")
 
-def logout(request):
-    logout(request)
-    return redirect('login')
+def loggout(request):
+    return render(request ,'logout.html')
 
 def loggin(request) : 
     return render(request , "login.html")
@@ -44,13 +49,17 @@ def custom_login(request):
         # Kullanıcı başarılı bir şekilde giriş yaptı
         login(request, user)
 
-        # RefreshToken oluşturalım
+        # RefreshToken 
         refresh = RefreshToken.for_user(user)
 
         # Access token ve refresh token'ları alalım
         access_token = str(refresh.access_token)
         refresh_token = str(refresh)
 
+        response = HttpResponse()
+
+        response.set_cookie('access_token', access_token, max_age=3600)  
+        response.set_cookie('refresh_token', refresh_token, max_age=3600 * 24 * 30)  
         # Tokenları JSON formatında döndürelim
         response_data = {
             'access_token': access_token,
@@ -59,8 +68,27 @@ def custom_login(request):
         return JsonResponse(response_data)
 
     else:
-        # Kullanıcı adı veya şifre yanlış
         return JsonResponse({'error': 'Invalid username or password'}, status=400)
+
+
+# def decode_jwt_token(request):
+#     cookie_name = 'apiData'
+#     cookie_data = request.COOKIES.get(cookie_name)
+#     if cookie_data:
+#         token = JsonResponse({'cookie_data': cookie_data})
+#         try:
+#             # JWT'yi çöz
+#             decoded_token = jwt.decode(token, secret_key, algorithms=['HS256'])
+#             return decoded_token
+#         except jwt.ExpiredSignatureError:
+#             # JWT'nin süresi dolmuş
+#             return {'error': 'Token süresi dolmuş.'}
+#         except jwt.InvalidTokenError:
+#             # Geçersiz JWT
+#             return {'error': 'Geçersiz Token.'}
+#     else : 
+#         return JsonResponse({'error': 'Çerez bulunamadı.'})
+
 
 
 class RegisterAPI(generics.GenericAPIView):
@@ -74,8 +102,6 @@ class RegisterAPI(generics.GenericAPIView):
         return render(request, "login.html")
 
 
-
-
 class ProductListCreateAPIView(APIView):
     parser_classes = [MultiPartParser]
 
@@ -85,6 +111,9 @@ class ProductListCreateAPIView(APIView):
             serializer.save()
             return redirect('home-page')  
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer

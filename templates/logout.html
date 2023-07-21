@@ -7,9 +7,19 @@
     <h2>Çıkış Yap</h2>
     <p>Emin misiniz?</p>
 
-    <form method="post" action="/api/logout/">
         {% csrf_token %}
-        <button type="submit">Çıkış Yap</button>
-    </form>
+        <button onclick="logout()">Çıkış Yap</button>
+
+<!-- Diğer kodlar -->
+<!-- ... -->
+
+<script>
+    function logout() {
+        localStorage.clear();
+
+        window.location.href = "/login";
+    }
+
+</script>
 </body>
 </html>

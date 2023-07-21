@@ -60,14 +60,39 @@
                     <div class="details">
                         <h5>{{ item.title }}</h5>
                         <p>{{ item.description }}</p>
-                        <p>Price: {{ item.permission }} TL</p>
-                        <a href="#" class="btn">Go Somewhere</a>
+                        <p>Price: {{ item.price }} TL</p>
+                        <button onclick="saveData({{ item.id }})">Sepete Ekle</button>
+                        <select id="quantitySelect{{ item.id }}">
+                            {% for quantity in "123456789" %} 
+                            <option value="{{ quantity }}">{{ quantity }} Adet</option>
+                             {% endfor %}
+                        </select>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
+    
+<script>
+    function saveData(productId) {
+        const quantitySelect = document.getElementById('quantitySelect' + productId);
+        const selectedQuantity = parseInt(quantitySelect.value);
+        if (selectedQuantity < 1 || isNaN(selectedQuantity)) {
+            alert('Geçerli bir ürün adedi seçiniz.');
+            return;
+        }
+
+        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        for (let i = 0; i < selectedQuantity; i++) {
+            cartItems.push(productId);
+        }
+
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+        alert('Ürün(ler) sepete eklendi!');
+    }
+</script>
+    
 </body>
 </html>
 
