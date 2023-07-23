@@ -17,6 +17,8 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 import jwt
 from django.contrib.auth import logout
+from django.conf import settings
+import datetime
 
 
 def bag(request):
@@ -34,42 +36,49 @@ def loggout(request):
 def loggin(request) : 
     return render(request , "login.html")
 
+class custom_login(APIView):
+    def post(self,request):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-@csrf_exempt
-@require_POST
-def custom_login(request):
-    # Kullanıcıdan gelen verileri alalım
-    username = request.POST.get('username')
-    password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
 
-    # Kullanıcıyı doğrulayalım
-    user = authenticate(username=username, password=password)
+        SECRET_KEY = settings.SECRET_KEY
 
-    if user is not None and user.is_active:
-        # Kullanıcı başarılı bir şekilde giriş yaptı
-        login(request, user)
+        access_token_expiration_time = datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
+    
+        refresh_token_expiration_time = datetime.datetime.utcnow() + datetime.timedelta(days=30)
 
-        # RefreshToken 
-        refresh = RefreshToken.for_user(user)
+        if user is not None and user.is_active:
+            login(request, user)
 
-        # Access token ve refresh token'ları alalım
-        access_token = str(refresh.access_token)
-        refresh_token = str(refresh)
+            refresh_token_payload = {
+                'username': username,
+                'exp': refresh_token_expiration_time
+                }
+            
+            access_token_payload = {
+                'username': username,
+                'exp': access_token_expiration_time
+                }
+            
+            access_token = jwt.encode(access_token_payload, SECRET_KEY, algorithm='HS256')
 
-        response = HttpResponse()
+            refresh_token = jwt.encode(refresh_token_payload, SECRET_KEY, algorithm='HS256')
 
-        response.set_cookie('access_token', access_token, max_age=3600)  
-        response.set_cookie('refresh_token', refresh_token, max_age=3600 * 24 * 30)  
-        # Tokenları JSON formatında döndürelim
-        response_data = {
-            'access_token': access_token,
-            'refresh_token': refresh_token,
+            response_data = {
+                'access_token': access_token,
+                'refresh_token': refresh_token,
+            }
+
+            return JsonResponse(response_data)
+
+        else:
+            data = {
+            'message': 'Giriş başarısız',
+            'status': 'Fail',
         }
-        return JsonResponse(response_data)
-
-    else:
-        return JsonResponse({'error': 'Invalid username or password'}, status=400)
-
+            return JsonResponse(data)
 
 # def decode_jwt_token(request):
 #     cookie_name = 'apiData'
@@ -127,6 +136,7 @@ class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
         return self.destroy(request, *args, **kwargs)
 
 
+    
 
 def showPrdAll(request):
     prod=Product.objects.all()
