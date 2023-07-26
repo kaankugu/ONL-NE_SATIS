@@ -4,19 +4,34 @@
     <title>Çıkış Yap</title>
 </head>
 <body>
+    <span id="close" onclick="window.close();">×</span>
     <h2>Çıkış Yap</h2>
     <p>Emin misiniz?</p>
-
-        {% csrf_token %}
-        <button onclick="logout()">Çıkış Yap</button>
+    <button id="cikisYapOnayButton" onclick="logout()">Çıkış Yap</button>
 
 <script>
     function logout() {
+        // Çıkış yapma işlemleri burada gerçekleştirilecek
         localStorage.clear();
+        
+        deleteAllCookies();
 
-        window.location.href = "/login";
+        window.close();
+
+        // Ana sayfayı /login sayfasına yönlendir
+        window.opener.location.href = "/login";
     }
-
+    function deleteAllCookies() {
+        var cookies = document.cookie.split(";");
+    
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i];
+            var eqPos = cookie.indexOf("=");
+            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+    }
+    
 </script>
 </body>
 </html>

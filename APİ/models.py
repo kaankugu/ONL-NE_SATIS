@@ -1,11 +1,12 @@
 from django.db import models
-
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-
+import uuid
 
 
 class CustomUser(AbstractUser):
-    # adress = models.ManyToManyField(Address,on_delete=...)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)    
+    #adress = models.ManyToManyField(Address,on_delete=...)
     adress = models.ManyToManyField("Address")
     cards = models.ManyToManyField("cards")
     phone_number = models.CharField(max_length=15,null=True,blank=True)
@@ -13,17 +14,17 @@ class CustomUser(AbstractUser):
     permission = models.BooleanField(default=False)
     
 class Address(models.Model) : 
-    Address_id = models.IntegerField( max_length = 24)
+    Address_id = models.IntegerField( )
     address = models.CharField( max_length = 50)
     street = models.CharField( max_length = 50)
     city = models.CharField( max_length = 50)
     ilçe = models.CharField( max_length = 50)
        
 class Cards(models.Model) : 
-    cards_id =  models.IntegerField( max_length = 50)
-    card_number = models.IntegerField( max_length = 50)
-    cvs = models.IntegerField( max_length = 50)
-    date = models.DateField( max_length = 50)
+    cards_id =  models.IntegerField()
+    card_number = models.IntegerField()
+    cvs = models.IntegerField()
+    date = models.DateField()
 
 
 class Product(models.Model):
@@ -32,7 +33,8 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='prod_img', default='prod_img/no_image.png')
     permission = models.BooleanField(default=False)
-   
+    #user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, to_field='username',blank=True ,null=True)
+
 
     def __str__(self):
         return self.title

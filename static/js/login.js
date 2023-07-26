@@ -1,3 +1,8 @@
+
+function goToHomePage() {
+    window.location.href = ("/");
+}
+
 function redirect() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;

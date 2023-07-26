@@ -19,4 +19,6 @@ urlpatterns = [
      path('bag/',  bag , name ="bag"),
      path('menu/',  menu , name ="menu"),
 
+
     ]
+

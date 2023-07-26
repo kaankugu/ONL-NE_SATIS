@@ -1,53 +1,80 @@
-{% load static %}
-
-{% if request.path == '/' or request.path == '/hakkımda/' or request.path == '/comments/' %}
-<nav class="navbar navbar-expand-xl navbar-light fixed-top">
-    <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            
-        </button>
-        <div class="navbar-collapse collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Anasayfa</a>
-                </li>
-                {% if user.groups.all.0.name == "admin" %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'about' %}">Hakkımda</a>
-                </li>
-                {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'comment_page' %}">Yorum yap</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Git Projelerim
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="https://github.com/kaankugu/Classification-" target="_blank">Classification</a></li>
-                        <li><a class="dropdown-item" href="https://github.com/kaankugu/Regression" target="_blank">Regression</a></li>
-                    </ul>
-                </li>
-                {% if user.is_authenticated %}
+<!DOCTYPE html>
+{%load static%}
+<html>
+    <head>
+        <title>Çıkış Yap Pop-up</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/menu.css' %}">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-xl navbar-light fixed-top">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"></button>
+            <div class="navbar-collapse collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Çıkış Yap</a>
+                        <a class="nav-link active" aria-current="page" href="{% url 'home-page' %}">Anasayfa</a>
                     </li>
-                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'products' %}">Ürünler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'creatProduct' %}">Ürün Ekle</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Sepetim
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">First</th>
+                                    <th scope="col">Last</th>
+                                    <th scope="col">Handle</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <th scope="row">1</th>
+                                    <td>Mark</td>
+                                    <td>Otto</td>
+                                    <td>@mdo</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">2</th>
+                                    <td>Jacob</td>
+                                    <td>Thornton</td>
+                                    <td>@fat</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">3</th>
+                                    <td>Larry</td>
+                                    <td>the Bird</td>
+                                    <td>@twitter</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                        </div>
+                      </li>
+                      
+                    {% if user.is_authenticated %}
+                    
+                    <!-- href="#" yerine href="javascript:void(0);" yazın -->
+                    <button onclick="openPopup({% url 'logout' %})">Çıkış Yap</button>
+                    {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login' %}">Giriş Yap</a>
                     </li>
-                {% endif %}
-            </ul>
-            <!-- buraya taşıdık -->
-            <div class="user-info">
-                <h5>Kullanıcı Bilgileri</h5>
-                {% if user.is_authenticated %}
-                    <p>Kullanıcı adı: {{ user.username }}</p>
-                {% else %}
-                    <p>Kullanıcı girişi yapılmadı.</p>
-                {% endif %}
+                    {% endif %}
+                </ul>
             </div>
         </div>
-    </div>
-  </nav>
-  {% endif %}
+    </nav>
+    
+    
+    
+    <script src="{% static 'js/menu.js' %}"></script>
+</body>
+</html>

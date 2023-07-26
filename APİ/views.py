@@ -20,9 +20,9 @@ from django.contrib.auth import logout
 from django.conf import settings
 import datetime
 
-
 def bag(request):
     return render(request, "bag.html")
+
 
 def menu(request):
     return render(request, "menu.html")
@@ -34,6 +34,7 @@ def Register(request):
     return render(request, "register.html")
 
 def loggout(request):
+    logout(request)
     return render(request ,'logout.html')
 
 def loggin(request) : 
@@ -75,13 +76,11 @@ class custom_login(APIView):
             }
 
             return JsonResponse(response_data)
-
         else:
-            data = {
-            'message': 'Giriş başarısız',
-            'status': 'Fail',
-        }
-            return JsonResponse(data)
+            # Eğer kullanıcı bulunamaz veya hesap aktif değilse hata mesajı döndürün
+            error_message = "Kullanıcı adı veya şifre yanlış veya hesap aktif değil."
+            return JsonResponse({'error': error_message})
+        
 
 # def decode_jwt_token(request):
 #     cookie_name = 'apiData'
@@ -138,7 +137,8 @@ class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
-
+def MyProd(request):
+    prod = Product.objects.filter(user = user)
     
 
 def showPrdAll(request):
@@ -154,10 +154,14 @@ def showPrd(request):
 def add(request):
     return render(request, "add_product.html")
     
-def update_permission(request,id):
-    prod =Product.objects.get(id=id)
-    permission=not prod.permission
 
-    Product.objects.filter(id=id).update(permission=permission)
+def update_permission(request, id):
+    try:
+        product = Product.objects.get(id=id)
+        permission = not product.permission
+        Product.objects.filter(id=id).update(permission=permission)
+        return JsonResponse({'message': 'İşlem başarılı'})
+    except Product.DoesNotExist:
+        return JsonResponse({'message': 'Ürün bulunamadı'}, status=404)
     
-    return JsonResponse({'message': 'İşlem başarılı'})
+

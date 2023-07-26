@@ -9,7 +9,7 @@
 
 </head>
 <body>
-    
+        <h2>Giriş</h2>
         <form method="post" action="/api/login/">
         {% csrf_token %}
         <label for="username">Kullanıcı Adı:</label>
@@ -17,7 +17,10 @@
         <label for="password">Şifre:</label>
         <input type="password" id="password" name="password" required><br><br>
         <button type="submit"  onclick ="redirect()">Giriş Yap</button>
-        
+        <a href="/register">
+            <button type="button">Kayıt Ol</button>
+        </a>
+        <button type="button" onclick="goToHomePage()">Ana Sayfa'ya Git</button>
     </form>
 </body>
 </html>

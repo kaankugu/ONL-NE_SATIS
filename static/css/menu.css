@@ -1,37 +1,120 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-  }
+/* styles.css */
+
+/* Diğer stiller */
+
+/* Navbar stil ayarları */
+.navbar {
+  background-color: #075361;
+  padding: 10px 0;
+}
+
+.navbar-brand img {
+  width: 180px;
+  height: 100px;
+}
+
+.navbar-toggler {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.navbar-toggler span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: #fff;
+  transition: transform 0.3s ease-in-out;
+}
+
+.navbar-toggler span:before,
+.navbar-toggler span:after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  transition: transform 0.3s ease-in-out;
+}
+.navbar-links {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.navbar-nav {
+  display: flex;
+}
+
+.nav-item {
+  margin: 0 15px;
+}
+
+.nav-link {
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  color: #eebaba;
+}
+
+/* Sepetim Dropdown menüsü */
+.dropdown-menu {
+  display: none;
+  top: 100%;
+  left: 0;
+  background-color: #f8f9fa;
+  border: none;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-item {
+  display:block
   
-  .menu-container {
-    position: fixed;
-    top: 0;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: #eebaba;
+}
+
+/* Kart simgesi */
+.cart-icon {
+  margin-left: 5px;
+  font-size: 20px;
+}
+
+/* Küçük ekranlar için stiller */
+@media (max-width: 767px) {
+  .navbar-links {
+    display: none;
+    position: absolute;
+    top: 100%;
     left: 0;
     width: 100%;
-    background-color: #333;
-    z-index: 999; /* Menünün içeriğin üzerine gelmesini sağlar */
-  }
-  
-  .menu {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    justify-content: space-around;
-  }
-  
-  .menu li {
+    background-color: #075361;
     padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1;
   }
-  
-  .menu li a {
-    color: #fff;
-    text-decoration: none;
+
+  .navbar-links.show {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .content {
-    /* Menü yüksekliği kadar boşluk bırakır */
-    padding-top: 40px; /* Menü yüksekliğine göre ayarlayabilirsiniz */
+
+  .nav-item {
+    margin: 10px 0;
   }
-  
+}
