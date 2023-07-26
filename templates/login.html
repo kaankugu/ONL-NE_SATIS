@@ -1,12 +1,15 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
 <head>
     <title>Giriş Yap</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/login.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+
 </head>
 <body>
-
-    <h2>Giriş Yap</h2>
+    
         <form method="post" action="/api/login/">
         {% csrf_token %}
         <label for="username">Kullanıcı Adı:</label>
@@ -16,33 +19,5 @@
         <button type="submit"  onclick ="redirect()">Giriş Yap</button>
         
     </form>
-    <script>
-        function redirect() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            
-            $.ajax({
-                url: "/api/login/",
-                type: "POST",
-                data: { username: username, password: password },
-                
-                success: function(response) {
-
-                    const token = response.access_token;
-                    document.cookie = `apiData=${JSON.stringify({ access_token: token })}; expires= Thu, 21 Aug 2025 20:00:00 UTC; path=/ `;
-                    window.location.href = "/";
-
-    
-                },
-                error: function(error) {
-                    console.error(error);
-
-                }
-            });
-            $(document).ready(function() {
-                handleUserLogin();  
-            })
-        }
-      </script>
 </body>
 </html>

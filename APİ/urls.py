@@ -17,5 +17,6 @@ urlpatterns = [
      path('add/',  add , name ="creatProduct"),
      path('update-permission/<int:id>/', update_permission, name='update-permission'),
      path('bag/',  bag , name ="bag"),
+     path('menu/',  menu , name ="menu"),
 
     ]

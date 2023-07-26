@@ -24,6 +24,9 @@ import datetime
 def bag(request):
     return render(request, "bag.html")
 
+def menu(request):
+    return render(request, "menu.html")
+
 def HomePage(request):
     return render(request, "home.html")
 

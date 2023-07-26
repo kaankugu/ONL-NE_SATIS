@@ -1,10 +1,21 @@
 <!DOCTYPE html>
+{%load static%}
 <html>
 <head>
-    <title>Ürün Ekle</title>
+  
+  <title>Ürün Ekle</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/add_product.css' %}"/> 
+  
+  <script>
+    function redirectToMenu() {
+        window.location.href = "/menu";
+    }
+  </script>
 </head>
-<body>
-    <h1>Ürün Ekle</h1>
+<body >
+  {% include 'menu.html' %}
+
+  <h1>Ürün Ekle</h1>
     <form method="post" action="{% url 'product-create' %}" enctype="multipart/form-data">
         <form enctype="multipart/form-data" method="POST" action="/your-action-endpoint/">
 
