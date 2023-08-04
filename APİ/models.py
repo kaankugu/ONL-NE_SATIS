@@ -1,17 +1,77 @@
 from django.db import models
-from django.conf import settings
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser,BaseUserManager
 import uuid
 
+class UserAccountManager(BaseUserManager):
+    def create_user(self, email, username, password=None):
+        if not email:
+            raise ValueError("Email field is required !")
+        if not username:
+            raise ValueError("Username field is required !")
+        if not password:
+            raise ValueError("Password field is required !")
+        user = self.model(
+            email=email,
+            username=username
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+ 
+    def create_superuser(self, email, username, password):
+        user = self.create_user(
+            email=email, username=username, password=password)
+        user.is_superuser = True
+        user.is_staff = True
+        user.is_admin = True
+        user.save()
+        return user
+ 
+    def create_admin(self, email, username, password):
+        user = self.create_user(email, username, password)
+        user.is_admin = True
+        user.save()
+        return user
+ 
+    def create_seller(self, email, username, password):
+        user = self.create_user(email, username, password)
+        user.is_seller = True
+        user.save()
+        return user
+ 
+    def create_customer(self, email, username, password):
+        user = self.create_user(email, username, password)
+        user.is_customer = True
+        user.save()
+        return user
 
 class CustomUser(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)    
     #adress = models.ManyToManyField(Address,on_delete=...)
+    username = models.CharField(max_length=200, blank=False, null=False)
+    email = models.EmailField(
+        max_length=200, blank=False, null=False, unique=True)
+ 
     adress = models.ManyToManyField("Address")
     cards = models.ManyToManyField("cards")
     phone_number = models.CharField(max_length=15,null=True,blank=True)
     birth_date = models.DateField(null=True,blank=True)
-    permission = models.BooleanField(default=False)
+    is_seller = models.BooleanField(default=False)
+    is_customer = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=True)
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = [] 
+
+    def __unicode__(self):
+        return str(self.username)
+ 
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
+ 
+    def has_module_perms(self, app_label):
+        return True
     
 class Address(models.Model) : 
     Address_id = models.IntegerField( )
@@ -33,7 +93,6 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='prod_img', default='prod_img/no_image.png')
     permission = models.BooleanField(default=False)
-    #user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, to_field='username',blank=True ,null=True)
 
 
     def __str__(self):

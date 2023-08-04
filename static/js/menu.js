@@ -1,15 +1,25 @@
-var width = 500;
-var height = 400;
-var popup;
+const navbar = document.querySelector('.navbar')
+
+navbar.querySelector('.toggle').addEventListener('click',()=>{
+	
+	navbar.classList.toggle('collapsed')
+	
+})
 
 
-function openPopup() {
-    var left = (screen.width - width) / 2;
-    var top = (screen.height - height) / 2;
 
-    // Pop-up'ın URL'sini dinamik olarak belirle
-    var popupUrl = window.location.origin + "/logout";
-
-    popup = window.open(popupUrl, "popup", "width=" + width + ",height=" + height + ",left=" + left + ",top=" + top);
-    popup.focus();
+window.addEventListener('scroll',(e)=>{
+	
+	let windowY = window.pageYOffset
+	
+	let navbarHeight = document.querySelector('.navbar').offsetHeight
+	
+	if(windowY>navbarHeight) navbar.classList.add('sticky')
+	else navbar.classList.remove('sticky')
+	
+	
+})
+function redirectToTarget(target) {
+    window.location.href = target;
 }
+

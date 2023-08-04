@@ -1,27 +1,28 @@
-from urllib import response
-from django.shortcuts import render ,redirect 
-from rest_framework import generics
-from APİ.serializers import *
-from .serializers import UserSerializer
-from rest_framework.views import APIView , status
-from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
-from django.shortcuts import get_object_or_404
 from rest_framework.parsers import MultiPartParser
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from django.http import HttpResponse
-import jwt
+from rest_framework.views import APIView , status
+from django.shortcuts import  get_object_or_404
+from django.shortcuts import render , redirect 
+from rest_framework.response import  Response
+from django.contrib.auth import authenticate
+from .serializers import UserSerializer
 from django.contrib.auth import logout
+from django.http import  JsonResponse
+from rest_framework import generics
 from django.conf import settings
+from APİ.serializers import *
+from APİ.decorator import *
 import datetime
+import jwt
 
+
+@login_required(login_url='/login/')
 def bag(request):
     return render(request, "bag.html")
+
+def No_page(request,exception): 
+    return render(request, "404.html", {})
 
 
 def menu(request):
@@ -30,39 +31,64 @@ def menu(request):
 def HomePage(request):
     return render(request, "home.html")
 
+
+def loggin(request) : 
+    return render(request , "login.html")
+
+
 def Register(request):
     return render(request, "register.html")
+
 
 def loggout(request):
     logout(request)
     return render(request ,'logout.html')
 
-def loggin(request) : 
-    return render(request , "login.html")
 
+@superuser_access_only
+def update(request): 
+    return render(request , "superuser_permission.html")
+
+
+
+@login_required(login_url='/login/')
+def add(request):
+    return render(request, "add_product.html")
+    
+
+@admin_access_only
+def showPrdAll(request):
+    prod=Product.objects.all()
+    return render(request, 'admin_product.html', {'prod': prod})
+
+
+def showPrd(request):
+    prodPermission=Product.objects.filter(permission = True)
+    return render(request, 'products_list.html', {'prodPermission': prodPermission})
+
+
+        
 class custom_login(APIView):
     def post(self,request):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = authenticate(username=username, password=password)
-
+        email = request.data.get('email')
+        password = request.data.get('password')
+        user = authenticate(username=email, password=password)
         SECRET_KEY = settings.SECRET_KEY
 
         access_token_expiration_time = datetime.datetime.utcnow() + datetime.timedelta(minutes=15)
     
         refresh_token_expiration_time = datetime.datetime.utcnow() + datetime.timedelta(days=30)
 
-        if user is not None and user.is_active:
+        if user :
             login(request, user)
 
             refresh_token_payload = {
-                'username': username,
+                'email':email ,
                 'exp': refresh_token_expiration_time
                 }
             
             access_token_payload = {
-                'username': username,
+                'email': email,
                 'exp': access_token_expiration_time
                 }
             
@@ -74,12 +100,10 @@ class custom_login(APIView):
                 'access_token': access_token,
                 'refresh_token': refresh_token,
             }
-
-            return JsonResponse(response_data)
+            return Response(response_data, status=status.HTTP_200_OK)
         else:
-            # Eğer kullanıcı bulunamaz veya hesap aktif değilse hata mesajı döndürün
-            error_message = "Kullanıcı adı veya şifre yanlış veya hesap aktif değil."
-            return JsonResponse({'error': error_message})
+            return Response({'error': 'Geçersiz eposta veya parola.'}, status=status.HTTP_401_UNAUTHORIZED)
+        
         
 
 # def decode_jwt_token(request):
@@ -101,6 +125,12 @@ class custom_login(APIView):
 #         return JsonResponse({'error': 'Çerez bulunamadı.'})
 
 
+class All_User(APIView) :
+    def get(self, request):
+        user = CustomUser.objects.all()
+        serializer = UserSerializer(user , many = True)
+        return Response(serializer.data)
+
 
 class RegisterAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
@@ -109,20 +139,17 @@ class RegisterAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        print(user)
         return render(request, "login.html")
-
+    
 
 class ProductListCreateAPIView(APIView):
     parser_classes = [MultiPartParser]
-
-    def post(self, request, format=None):
+    def post(self, request):
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return redirect('home-page')  
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 
@@ -137,31 +164,42 @@ class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
-def MyProd(request):
-    prod = Product.objects.filter(user = user)
-    
-
-def showPrdAll(request):
-    prod=Product.objects.all()
-    return render(request, 'admin_product.html', {'prod': prod})
-    
-
-def showPrd(request):
-    prodPermission=Product.objects.filter(permission = True)
-    return render(request, 'products_list.html', {'prodPermission': prodPermission})
 
 
-def add(request):
-    return render(request, "add_product.html")
-    
+class update_permission(APIView):
+    def post(self, request):
+        try:
+            id = request.data.get("id")
+            product = Product.objects.get(id=id)
+            permission = not product.permission
+            Product.objects.filter(id=id).update(permission=permission)
+            return JsonResponse({'message': 'İşlem başarılı'})
+        except Product.DoesNotExist:
+            return JsonResponse({'message': 'Ürün bulunamadı'}, status=404)
+        
 
-def update_permission(request, id):
-    try:
-        product = Product.objects.get(id=id)
-        permission = not product.permission
-        Product.objects.filter(id=id).update(permission=permission)
-        return JsonResponse({'message': 'İşlem başarılı'})
-    except Product.DoesNotExist:
-        return JsonResponse({'message': 'Ürün bulunamadı'}, status=404)
-    
+class UpdateUserAPIView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        typePerm = request.data.get('typePerm')
+        print(email ,  typePerm)
+        if not email or not typePerm:
+            return JsonResponse({'message': 'E-posta ve yetki türü bilgilerini eksiksiz gönderin.'}, status=400)
+
+        try:
+            user = CustomUser.objects.get(email=email)
+            if typePerm == "admin":
+                user.is_admin = not user.is_admin
+            elif typePerm == "superuser":
+                user.is_superuser = not user.is_superuser
+            elif typePerm == "seller":
+                user.is_seller = not user.is_seller
+            else:
+                return JsonResponse({'message': 'Geçersiz yetki türü'}, status=400)
+
+            user.save()
+            return JsonResponse({'message': 'İşlem başarılı'})
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'message': 'Kullanıcı bulunamadı'}, status=404)
+
 

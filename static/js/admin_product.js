@@ -4,7 +4,7 @@ $(document).ready(function() {
         var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
         $.ajax({
-            url: "/update-permission/" + item_id + "/",
+            url: "/update-permission/",
             type: "POST",
             headers: {
                 "X-CSRFToken": csrfToken
@@ -13,6 +13,7 @@ $(document).ready(function() {
                 alert(response.message); 
                 window.location.reload(); 
             },
+            data : {id : item_id},
             error: function(error) {
                 console.log(error);
             }

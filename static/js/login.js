@@ -4,13 +4,13 @@ function goToHomePage() {
 }
 
 function redirect() {
-    const username = document.getElementById("username").value;
+    const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     
     $.ajax({
         url: "/api/login/",
         type: "POST",
-        data: { username: username, password: password },
+        data: { email: email, password: password },
         
         success: function(response) {
 
@@ -22,7 +22,6 @@ function redirect() {
         },
         error: function(error) {
             console.error(error);
-
         }
     });
     $(document).ready(function() {

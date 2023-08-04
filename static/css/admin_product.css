@@ -1,5 +1,6 @@
 .card {
-    width: 18rem;
+    top :10px; 
+    width: 17rem;
     margin-bottom: 20px;
 }
 
@@ -26,7 +27,7 @@
 .update-button {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #ff6b6b;
+    background-color: #5df815d5;
     color: #fff;
     border-radius: 5px;
     text-decoration: none;
@@ -34,5 +35,5 @@
 }
 
 .update-button:hover {
-    background-color: #ff4f4f;
+    background-color: #85fa4e;
 }
