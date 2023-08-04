@@ -61,8 +61,8 @@ input[type="password"]:focus {
     outline: none;
 }
 
-.register-button {
-    background-color: #3498db;
+.register_button {
+    background-color: #27ae60;
     color: #fff;
     padding: 12px 24px;
     border: none;
@@ -72,8 +72,8 @@ input[type="password"]:focus {
     transition: background-color 0.3s ease;
 }
 
-.register-button:hover {
-    background-color: #2980b9;
+.register_button:hover {
+    background-color: #43e486;
 }
 
 

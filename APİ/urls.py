@@ -7,7 +7,6 @@ from APİ.decorator import *
 
 urlpatterns = [
      path('bag/', bag , name ="bag"),
-     path('404/',  No_page , name ="404"),
      path("login/", loggin ,name="login" ),
      path('update/', update , name ="update"),
      path("logout/",loggout , name = "logout"),

@@ -2,6 +2,7 @@
 {%load static%}
 <html>
 <head>
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
     <title>Kayıt Ol</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -15,10 +16,9 @@
         <input type="email" id="email" name="email" required><br><br>
         <label for="password">Şifre:</label>
         <input type="password" id="password" name="password" required><br><br>
-        <button type="submit" onclick ="redirect()">Kayıt Ol</button>
+        <button class = "register_button" type="submit" onclick ="redirect()">Kayıt Ol</button>
     </form>
     
-    <link rel="stylesheet" href="{% static 'css/register.css' %}">
     <script src="{% static 'js/register.js' %}"></script>
 </body>
 </html>

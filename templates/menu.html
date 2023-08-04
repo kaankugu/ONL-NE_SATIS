@@ -17,18 +17,18 @@
   {% if user.is_authenticated %}
     
     <ul class="links">
-      <li><a href="/">Home</a></li>
-      <li><a href="{% url 'products' %}">Products</a></li>
-      <li><a href="{% url 'bag' %}">Bag</a></li>
-      <li><a href="{% url 'add' %}">Add Product</a></li>
+      <a href="{% url 'home-page' %}"><li>home</li></a>
+      <a href="{% url 'products' %}"><li>Products</li></a>
+      <a href="{% url 'bag' %}"><li>bag</li></a>
+      <a href="{% url 'add' %}"><li>Add Products</li></a>
       
       
       {% if user.is_superuser %}
-      <li><a href="{% url 'update' %}">Permission User</a></li>
+        <a href="{% url 'update' %}"><li>Permission User</li></a>
       {% endif %}
       
       {% if user.is_admin or user.is_superuser %}
-      <li><a href="{% url 'products-admin' %}">Permission Products</a></li>
+      <a href="{% url 'products-admin' %}"><li>Permission Products</li></a>
       {% endif %}
     </ul>
     
@@ -36,14 +36,14 @@
       <a href="#">
         <button>Hesabım</button>
       </a>
-      <a href="{% url 'logout' %}">
+      <a class = "logout" href="{% url 'logout' %}">
         <button>Çıkışyap</button>
       </a>
     </div>
     {% else %}
     <ul class="links">
-      <li><a href="/">Home</a></li>
-      <li><a href="{% url 'products' %}">Products</a></li>
+      <a href="{% url 'home-page' %}"><li>home</li></a>
+      <a href="{% url 'products' %}"><li>Products</li></a>
 
     </ul>
     <div class="right">
