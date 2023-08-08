@@ -1,6 +1,7 @@
 
-function goToHomePage() {
-    window.location.href = ("/");
+function goToForgatePassword() {
+    url = "/sendEmail/"
+    window.location.href = (url);
 }
 
 function redirect() {

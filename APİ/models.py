@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser,BaseUserManager
 import uuid
+from django.utils import timezone
 
 class UserAccountManager(BaseUserManager):
     def create_user(self, email, username, password=None):
@@ -59,7 +60,8 @@ class CustomUser(AbstractUser):
     is_seller = models.BooleanField(default=False)
     is_customer = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=True)
+    is_superuser = models.BooleanField(default=False)
+    
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = [] 
@@ -97,4 +99,14 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
-  
+
+
+class updateCode(models.Model):
+    successcode = models.CharField(max_length=6, default=0 )
+    token = models.CharField(max_length=50)
+    expire_date = models.DateTimeField(default=timezone.now() + timezone.timedelta(minutes=5))
+    used = models.BooleanField(default=False)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['-expire_date']

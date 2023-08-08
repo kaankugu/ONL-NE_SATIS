@@ -41,9 +41,13 @@ class EmailBackend(ModelBackend):
                 return user
         return None
 
+class UpdateCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = updateCode
+        fields = '__all__'
 
-
-
-
-
+class encoder(serializers.ModelSerializer):
+    model = CustomUser
+    fields = ('password')
+    extra_kwargs = {'password': {'write_only': True}}
 

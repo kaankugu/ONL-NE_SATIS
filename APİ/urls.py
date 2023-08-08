@@ -21,6 +21,10 @@ urlpatterns = [
      path('update_user/', superuser_access_only(UpdateUserAPIView.as_view()), name='update_user'),
      path('api/products/', seller_access_only(ProductListCreateAPIView.as_view()), name='product-create'),
      path('api/products/<int:id>/', admin_access_only(ProductRetrieveUpdateDestroyAPIView.as_view()), name='product-detail'),
+     path("sendEmail/api/sendEmail/", SendEmail.as_view() ,name = "SendEmail"), 
+     path("sendEmail/", sendEmailPage ,name = "SendEmail"), 
+     path("updatePassword/<str:token>/", forgetPassword, name="forgetPassword"),
+     path("api/updatePassword/", updataPassword.as_view() ,name = "updataPassword"), 
 
     ]
 
