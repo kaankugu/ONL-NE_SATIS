@@ -11,7 +11,7 @@
 <body>
   {% include 'menu.html' %}
 
-  <h1>Ürün Ekle</h1>
+  <h1 class="baslik">Ürün Ekle</h1>
   <div class="add_product">
     {% csrf_token %}
     <label for="title">Ürün Adı:</label>
@@ -78,7 +78,7 @@
         processData: false,
         contentType: false,
         success: function (data) {
-          alert(response.message); 
+          alert("Ürün Bşrıyla Eklendi."); 
           window.location.reload(); 
         },
         error: function (xhr, status, error) {

@@ -1,25 +1,70 @@
 /* style.css */
 
 html{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }   
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f5f5;
-
+    background-color: black;
     height: 100vh;
 }
-
+/* login.css */
 .login-container {
     position: relative;
     top: 50%;
     left: 50%;
-    width: 600px;
-    padding: 20px;
+    width: 400px;
+    padding: 45px;
     border-radius: 10px;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
+    background-color: black;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 2px solid #45f3ff;
+}
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(69, 243, 255, 0.2), transparent);
+    z-index: -1;
+    animation: animate 6s linear infinite;
+}
+
+@keyframes animate {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+.login-container form input[type="submit"]:active
+/* .login-container form .links input:nth-child(2) */
+
+{ opacity: 0.8; 
+
+
+    }
+
+.login-container input[type="text"],
+.login-container input[type="password"] {
+  text-align: center;
+}
+
+
+.login-container label {
+  margin-bottom: 5px;
 }
 
 .login-title {
@@ -55,10 +100,28 @@ input[type="password"] {
     transition: border-color 0.3s ease;
 }
 
-input[type="text"]:focus,
-input[type="password"]:focus {
-    border-color: #3cabf5;
-    outline: none;
+#email {
+    background: transparent;
+    overflow: hidden;
+    transition: 0.5s;
+    border: none;
+    border-bottom: 2px solid white;
+}
+
+#password {
+    background: transparent;
+    overflow: hidden;
+    transition: 0.5s;
+    border: none;
+    border-bottom: 2px solid white;
+}
+
+h2 {
+
+    text-align: center;
+    color: white;
+    font-weight: bold;
+
 }
 
 .login-button , 

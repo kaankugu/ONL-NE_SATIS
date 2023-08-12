@@ -1,27 +1,44 @@
-$(document).ready(function() {
-    $(".update-button").click(function() {
-        var item_id = $(this).data("item-id");
-        var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+function update_button(item_id) {
+    var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
-        $.ajax({
-            url: "/update-permission/", 
-            type: "POST",
-            headers: {
-                "X-CSRFToken": csrfToken
-            },
-            success: function(response) {
-                alert(response.message); 
-                window.location.reload(); 
-            },
-            data : {id : item_id},
-            error: function(error) {
-                console.log(error);
-            }
-           
-        });
+    $.ajax({
+        url: "/update-permission/", 
+        type: "POST",
+        headers: {
+            "X-CSRFToken": csrfToken
+        },
+        success: function(response) {
+            alert(response.message); 
+            window.location.reload(); 
+        },
+        data : {id : item_id},
+        error: function(error) {
+            console.log(error);
+        }
+        
     });
-});
+    }
+function Delete_button(item_id){
+    var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    $.ajax({
+        url: "/api/products/" + item_id + "/" ,
+        type: "DELETE",
+        headers: {
+            "X-CSRFToken": csrfToken
+        },
+        success: function(response) {
+            alert(response.message); 
+            window.location.reload(); 
+        },
+        data : {id : item_id},
+        error: function(error) {
+            console.log(error);
+        }
 
+    });
+
+}
+ 
 async function fetchProducts() {
     try {
         const response = await fetch('/api/products/'); 
@@ -35,15 +52,16 @@ async function fetchProducts() {
 async function displayProducts() {
     const products = await fetchProducts();
 
-    const productContainer = document.getElementById('product-container');
-   
     products.forEach(product => {
-        const productCard = document.createElement('div');
+    const productCard = document.createElement('div');
         productCard.classList.add('product-card');
-        
+    
+        const productContainer = document.getElementById('product-container');
         const Permission = product.permission;
-        if (!Permission) {
-            return ;}
+
+        const permissionStatus = Permission ? 'Ürün yayında' : 'Ürün yayında değil';
+        const permissionButtonText = Permission ? 'Yayını Kaldır' : 'Ürünü Yayınla';
+       
  
                     
         const quantitySelect = document.createElement('select');
@@ -83,11 +101,16 @@ async function displayProducts() {
         productCard.innerHTML = `
         <h3>${product.title}</h3>
         <p>${product.description}</p>
-        <p>Price: $${product.price}</p>
+        <p class="price">Price: $${product.price}</p>
+        <p class="permission-status">${permissionStatus}</p>
         ${productImageDiv.outerHTML}
+        
         <div>
+
+        <button class="update-button" onclick=update_button(${product.id})>${permissionButtonText}</button> <!-- Sınıf eklendi -->
+        <button class="delete-button" onclick=Delete_button(${product.id})>Ürünü Sil </button> <!-- Sınıf eklendi -->
+        
         </div>
-        <button onclick=saveData(${product.id})>Sepete Ekle</button>
         `;
 
         productContainer.appendChild(productCard);

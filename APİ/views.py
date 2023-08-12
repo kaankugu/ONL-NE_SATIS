@@ -7,15 +7,15 @@ from django.shortcuts import  get_object_or_404
 from django.shortcuts import render , redirect 
 from rest_framework.response import  Response
 from django.contrib.auth import authenticate
-from .serializers import UserSerializer
-from django.contrib.auth import logout
+from .serializers import  UserSerializer
+from django.contrib.auth  import logout
 from django.core.mail import send_mail
 from django.http import  JsonResponse
 from rest_framework import generics
 from django.conf import settings
 from APİ.serializers import *
 from APİ.decorator import *
-import datetime
+import  datetime
 import  random
 import string
 import jwt
@@ -113,7 +113,7 @@ class custom_login(APIView):
                 'access_token': access_token,
                 'refresh_token': refresh_token,
             }
-            return Response(response_data, status=status.HTTP_200_OK)
+            return Response( status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Geçersiz eposta veya parola.'}, status=status.HTTP_401_UNAUTHORIZED)
         
@@ -180,7 +180,7 @@ class ProductListCreateAPIView(APIView):
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return redirect('home-page')  # Burada 'home-page' yerine doğru yönlendirme ismini kullanmalısınız.
+            return redirect('home-page') 
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -199,13 +199,18 @@ class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
         'product_images': image_serializer.data,
         'product': product_serializer.data
         }
-        print(data)
         return Response(data)
     
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
     def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+        try:
+            id = self.kwargs["id"]
+            prod = Product.objects.filter(id=id)
+            prod.delete()
+            return Response({"success" : "Ürün Bşarıyla  Silindi."})
+        except Exception as e : 
+            return JsonResponse({"error" : "Ürün silerken Bir Hata Oluştu."})
 
 
 
@@ -265,12 +270,14 @@ def send_email_example(userEmail , token):
 
 class SendEmail(APIView) : 
     def post(self,request) :
-        email = request.data.get("email")   
         try:
+            email = request.data.get("email")   
             user = CustomUser.objects.get(email=email)
         except :
-            return Response({'error': 'User with this email does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
-
+               token = request.data.get("token")   
+               update = updateCode.obejct.filter(token = token)
+               user = CustomUser.objects.get(id = update.user_id)
+            
         try:
             email_token = updateCode.objects.get(user=user)
             if not email_token.used and email_token.expire_date > timezone.now():

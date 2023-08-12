@@ -3,24 +3,24 @@
 {% block admin_partition %}
 {% if user.is_authenticated %}
 
+{%include "menu.html" %}
 
 <!DOCTYPE html> 
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/admin_product.css' %}"/> 
     <title>Product List</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    {%include "menu.html" %}
     <div>
+        {% csrf_token %}
         <div id="product-container"></div>
-        <button class="update-button" data-item-id="{{ item.id }}">Güncelle</button>
-    
+        
     </div>   
     <script src="{% static 'js/admin_product.js' %}"></script>
             
 </body>
-</html>
+</html> 
 
 {% endif %}
 {% endblock admin_partition %}

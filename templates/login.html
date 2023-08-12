@@ -9,24 +9,26 @@
 
 </head>
 <body>
-    <div class= login-container>
-        <h2>Giriş</h2>
+    <div class= "login-container">
+       
         <form method="post" action="/api/login/">
+            <h2>GİRİŞ</h2>
         {% csrf_token %}
-        <label for="email">E-posta</label>
-        <input type="text" id="email" name="email" required><br><br>
-        <label for="password">Şifre:</label>
-        <input type="password" id="password" name="password" required><br><br>
+        <label for="email" style="color: white;">E-posta</label>
+        <input type="text" id="email" name="email" placeholder="E-Mail Girin" required><br><br>
+        <label for="password" style="color: white;">Şifre:</label>
+        <link rel="stylesheet" href="style.css">
+        <input type="password" id="password" name="password" placeholder="Şifre Girin" required><br><br>
         <div class = abc>
             <div class = abcc>
-                <button type="submit"  onclick ="redirect()" class = "enter" >Giriş Yap</button>
+                <button type="submit" style="font-weight: bold; font-size: 16px;"  onclick ="redirect()" class = "enter" >Giriş Yap</button>
                 <button type="button" class="login-button">
-                    <a href="/register">
+                    <a href="/register" style="font-weight: bold; font-size: 16px;">
                     Kayıt Ol
                 </a>
                 </button>
             </div>
-        <button type="button" onclick="goToForgatePassword()" class = "goToForgatePassword">Şifremi Unuttum</button>
+        <button type="button" onclick="goToForgatePassword()" class = "goToForgatePassword" style="font-weight: bold; font-size: 16px;">Şifremi Unuttum</button>
     </div>
     </form>
 </div>

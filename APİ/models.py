@@ -1,7 +1,7 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser,BaseUserManager
 import uuid
+from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import AbstractUser,BaseUserManager
 
 class UserAccountManager(BaseUserManager):
     def create_user(self, email, username, password=None):
