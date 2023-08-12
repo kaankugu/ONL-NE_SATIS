@@ -22,12 +22,36 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ["id", "product_id", "image"]
+
 class ProductSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, read_only=True )  
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(max_length=3000, allow_empty_file=False, use_url=True),
+        write_only=True
+    )
+
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ["id", "title", "description", "price", "permission", "images", "uploaded_images"]
+
+    def create(self, validated_data):
+        uploaded_images = validated_data.pop("uploaded_images")
+        product = Product.objects.create(**validated_data)
+
+        for image in uploaded_images:
+            ProductImage.objects.create(product=product, image=image)
+
+        return product
 
 
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ["id", "product", "image"]
 
 class EmailBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):

@@ -6,30 +6,89 @@
   <title>Ürün Ekle</title>
   <link rel="stylesheet" type="text/css" href="{% static 'css/add_product.css' %}"/> 
   
-  <script>
-    function redirectToMenu() {
-        window.location.href = "/menu";
-    }
-  </script>
+  
 </head>
-<body >
+<body>
   {% include 'menu.html' %}
 
   <h1>Ürün Ekle</h1>
-    <form method="post" action="{% url 'product-create' %}" enctype="multipart/form-data">
-        <form enctype="multipart/form-data" method="POST" action="/your-action-endpoint/">
+  <div class="add_product">
+    {% csrf_token %}
+    <label for="title">Ürün Adı:</label>
+    <input type="text" name="title" id="title" required><br><br>
+    <label for="description">Açıklama:</label>
+    <textarea name="description" id="description" required></textarea><br><br>
+    <label for="price">Fiyat:</label>
+    <input type="number" name="price" id="price" step="0.01" required><br><br>
+    <label for="images">Resimler:</label>
+    <input type="file" name="uploaded_images" accept="image/*" multiple="True" onchange="previewImages(event)"><br><br>
+    <div id="image-preview"></div>
+    <button onclick='add()' class="enter">Kaydet</button>
+  </div>
 
-        {% csrf_token %}
-        <label for="title">Ürün Adı:</label>
-        <input type="text" name="title" id="title" required><br><br>
-        <label for="description">Açıklama:</label>
-        <textarea name="description" id="description" required></textarea><br><br>
-        <label for="price">Fiyat:</label>
-        <input type="number" name="price" id="price" step="0.01" required><br><br>
-        <label for="image">Resim:</label>
-        <input type="file" name="image" accept="image/*" ><br><br>
+  <script>
+    
 
-        <input type="submit" value="Kaydet">
-    </form>
+    var fileList = [];
+    
+    function previewImages(event) {
+      var previewDiv = document.getElementById("image-preview");
+    
+      var files = event.target.files;
+      for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        fileList.push(file); // Dosyayı dosya listesine ekleyin
+        var image = document.createElement("img");
+        image.src = URL.createObjectURL(file);
+        image.style.maxWidth = "200px";
+        image.style.margin = "5px";
+        previewDiv.appendChild(image);
+      }
+    }
+
+
+    function add() {
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+      const price = document.getElementById("price").value;
+      const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+      
+      var formData = new FormData();
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('price', price);
+    
+      var uploadedImagesInput = document.querySelector('input[name="uploaded_images"]'); // Burayı değiştirdik
+      {% comment %} var uploadedImages = uploadedImagesInput.files; // Resimleri bir değişkene atadık {% endcomment %}
+      var uploadedImages =fileList // Resimleri bir değişkene atadık
+      for (var i = 0; i < uploadedImages.length; i++) {
+        formData.append('uploaded_images', uploadedImages[i]);
+      }
+      
+    
+
+
+      $.ajax({
+        url: "{% url 'product-create' %}",
+        type: "POST",
+        headers: {
+          "X-CSRFToken": csrfToken
+        },
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+          alert(response.message); 
+          window.location.reload(); 
+        },
+        error: function (xhr, status, error) {
+          window.location.href = "{% url 'home-page' %}";
+          alert("Ürününüz Brılı İle Kaydedildi"); 
+
+        }
+      });
+    }
+  </script>
 </body>
+
 </html>

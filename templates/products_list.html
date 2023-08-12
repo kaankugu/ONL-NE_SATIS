@@ -3,8 +3,8 @@
 
 {% block partition_user %}
 {% include 'menu.html' %}
-
-<!DOCTYPE html>
+ 
+<!DOCTYPE html> 
 <html>
 <head>
     <title>Product List</title>
@@ -12,30 +12,10 @@
     <script src="{% static 'js/products_list.js' %}"></script>
 </head>
 <body>
-
-    <div class="container">
-        <div class="row">
-            {% for item in prodPermission %}
-            <div class="col-md-4">
-                <div class="product-card">
-                    <img src="{{ item.image.url }}" alt="Product Image">
-                    <div class="details">
-                        <h5>{{ item.title }}</h5>
-                        <p>{{ item.description }}</p>
-                        <p>Price: {{ item.price }} TL</p>
-                        <button onclick="saveData({{ item.id }})">Sepete Ekle</button>
-                        <select id="quantitySelect{{ item.id }}">
-                            {% for quantity in "123456789" %} 
-                            <option value="{{ quantity }}">{{ quantity }} Adet</option>
-                             {% endfor %}
-                        </select>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    
+<div>
+    <div id="product-container"></div>  
+  
+</div>               
 </body>
 </html>
 

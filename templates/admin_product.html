@@ -3,36 +3,24 @@
 {% block admin_partition %}
 {% if user.is_authenticated %}
 
+
+<!DOCTYPE html> 
+<html>
 <head>
-    <title>Product List Admin</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/admin_product.css' %}"/> 
-    {% include 'menu.html' %}
-    
+    <title>Product List</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-
-<div class="container">
-    {% csrf_token %}
-    <div class="row">
-        {% for item in prod %}
-        <div class="col-md-4">
-            <div class="card">
-                <img class="card-img-top" src="{{ MEDIA_URL }}{{ item.image.url }}" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">{{ item.id }}</h5>
-                    <p class="card-text">{{ item.description }}</p>
-                    <p class="card-text">Price: {{ item.price }} TL</p>
-                    <p class="card-text">izin: {{ item.permission }}</p>
-                    <button class="update-button" data-item-id="{{ item.id }}">Güncelle</button>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
-<script src="{% static 'js/admin_product.js' %}"></script>
-
+<body>
+    {%include "menu.html" %}
+    <div>
+        <div id="product-container"></div>
+        <button class="update-button" data-item-id="{{ item.id }}">Güncelle</button>
+    
+    </div>   
+    <script src="{% static 'js/admin_product.js' %}"></script>
+            
+</body>
+</html>
 
 {% endif %}
 {% endblock admin_partition %}

@@ -1,7 +1,9 @@
-function redirect(){   
+function aredirect(){    
     const email = document.getElementById("email").value;
-    
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
     $.ajax({
+
         url: "api/sendEmail/",
         type: "POST",
         headers: {
@@ -10,19 +12,32 @@ function redirect(){
         data: { email : email  },
         
         success: function(response) {
-            if (response.success === 'Password reset link sent to your email.') {
-                alert(response.success); // Mesajı göster
-                window.location.href = "/login/"; // Giriş sayfasına yönlendir
-            } else if (response.success === 'Password reset link updated and sent to your email.') {
-                alert(response.success); // Mesajı göster
-                // Başka bir işlem yapabilirsiniz
+            if (response.message === 'E-posta gönderildi.') {
+                // Özelleştirilmiş bir iletişim kutusu oluşturma
+                var customMessage = "E-posta başarıyla gönderildi!";
+                var redirectUrl = response.redirectUrl; // Redirection URL
+
+                var alertContainer = document.createElement("div");
+                alertContainer.classList.add("custom-alert");
+
+                var message = document.createElement("p");
+                message.textContent = customMessage;
+                alertContainer.appendChild(message);
+
+                document.body.appendChild(alertContainer);
+
+                // Belirli bir süre sonra iletişim kutusunu kaldırma
+                setTimeout(function() {
+                    document.body.removeChild(alertContainer);
+                    window.location.href = redirectUrl; // Yönlendirme yapma
+                }, 3000);
             } else {
-                alert("Bir hata oluştu."); // İşlem başarısızsa hata mesajı göster
+                showErrorAlert("Bir hata oluştu.");
             }
         },
         error: function(error) {
             console.error(error);
         }
-    })
-
+        
+    });
 }

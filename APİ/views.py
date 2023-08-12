@@ -68,12 +68,16 @@ def sendEmailPage(request):
 @admin_access_only
 def showPrdAll(request):
     prod=Product.objects.all()
-    return render(request, 'admin_product.html', {'prod': prod})
+    images = ProductImage.objects.all()
+    prod_images = {}
+    for product in prod:
+        images = ProductImage.objects.filter(product_id=product.id)
+        prod_images[product.id] = images
+    return render(request, 'admin_product.html', {'prod': prod , "image" : images})
 
 
 def showPrd(request):
-    prodPermission=Product.objects.filter(permission = True)
-    return render(request, 'products_list.html', {'prodPermission': prodPermission})
+    return render(request, 'products_list.html' )
 
 
         
@@ -149,23 +153,55 @@ class RegisterAPI(generics.GenericAPIView):
         return render(request, "login.html")
     
 
+
 class ProductListCreateAPIView(APIView):
+    def get(self,request):
+        products = Product.objects.all() 
+        products_data = []
+
+        for product in products:
+            product_data = {
+                "id": product.id,
+                "title": product.title,
+                "description": product.description,
+                "price": product.price,
+                "permission" : product.permission,
+            }
+            product_images = ProductImage.objects.filter(product=product)
+            image_serializer = ProductImageSerializer( product_images, many=True)
+            product_data["images"] = image_serializer.data
+            
+            products_data.append(product_data)
+        return Response(data=products_data)
+
+
     parser_classes = [MultiPartParser]
-    def post(self, request):
+    def post(self, request, format=None):
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return redirect('home-page')  
+            return redirect('home-page')  # Burada 'home-page' yerine doğru yönlendirme ismini kullanmalısınız.
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
 class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
-    def get_object(self):
+    def get(self, request, *args, **kwargs):
         id = self.kwargs["id"]
-        return get_object_or_404(Product, id=id)
+        image =ProductImage.objects.filter(product_id = id)
+        image_serializer = ProductImageSerializer( image, many=True)
 
+        pro = Product.objects.filter(id=id)
+        product_serializer = ProductSerializer(pro, many=True) 
+        data = {
+        'product_images': image_serializer.data,
+        'product': product_serializer.data
+        }
+        print(data)
+        return Response(data)
+    
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
     def delete(self, request, *args, **kwargs):
@@ -223,7 +259,6 @@ def send_email_example(userEmail , token):
     to_addr = [userEmail]
     try:
         send_mail(subject, message, from_addr, to_addr)
-        print("E-posta gönderildi!")
     except Exception as e:
         print("E-posta gönderirken bir hata oluştu:", e)
 
@@ -253,12 +288,18 @@ class SendEmail(APIView) :
             }
         )
 
-        if created:
+        response_data = {
+        "success": True,
+        "message": "E-posta gönderildi.",
+        "redirectUrl": "/login/"
+    }
+
+        if created:  
             send_email_example(email , new_email_token.token)
-            return redirect("/login/")
+            return Response(response_data, status=status.HTTP_200_OK)
         else:
             send_email_example(email , new_email_token.token)
-            return redirect("/login/")
+            return Response(response_data, status=status.HTTP_200_OK)
         
 
 

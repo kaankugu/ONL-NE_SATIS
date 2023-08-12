@@ -1,17 +1,37 @@
-function createProductCard(data, productCount) {
+const productContainer = document.getElementById('productList'); // Ürünlerin ekleneceği alana erişim
+function createPrdList(data) { // productCount parametresini kaldırdım
+     data=data.shift()
+    const groupedData = {};
+
+    data.forEach(item => {
+        const productId = item.product;
+        if (!groupedData[productId]) {
+            groupedData[productId] = [];
+      }
+      groupedData[productId].push(item);
+    });
+    
+    data.forEach(product => { 
+        
+        const card = createProductCard(product); // productCount parametresini kaldırdım
+        productContainer.appendChild(card); // Ürün kartını ürün konteynerine ekleyin
+    });
+}
+
+function createProductCard(product, productCount) {
     const card = document.createElement('div');
     card.classList.add('product-card');
 
     // Kartın içeriği
     const productName = document.createElement('h2');
-    productName.textContent = data.title; // API'den dönen veriye göre ürün adını güncelleyin
+    productName.textContent = product?.title;
 
     const productDescription = document.createElement('p');
-    productDescription.textContent = data.description; // API'den dönen veriye göre ürün açıklamasını güncelleyin
+    productDescription.textContent = product?.description;
 
     const productPrice = document.createElement('p');
-    productPrice.textContent = 'Price: ' + data.price + ' TL'; // API'den dönen veriye göre ürün fiyatını güncelleyin
-    
+    productPrice.textContent = 'Price: ' + product?.product.price + ' TL';
+
     // Kartın içeriğini kart elementine ekleyin
     card.appendChild(productName);
     card.appendChild(productDescription);
@@ -19,30 +39,27 @@ function createProductCard(data, productCount) {
 
     // Ürün resmini ekleyin
     const productImage = document.createElement('img');
-    productImage.src = data.image; // API'den dönen veriye göre ürün resminin URL'sini güncelleyin
-    productImage.alt = data.title; // Ürün adını alternatif metin olarak ekleyebilirsiniz
-
-    // Kartın içeriğine ürün resmini ekleyin
+    productImage.src = product.image;
+    productImage.alt = product.title;
     card.appendChild(productImage);
 
     // Ürün adedini ekleyin
     const productCountElement = document.createElement('p');
     productCountElement.textContent = 'Adet: ' + productCount;
     card.appendChild(productCountElement);
-    
+
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Sil';
     deleteButton.addEventListener('click', () => {
-        removeProduct(data.id);
+        removeProduct(product.id);
         location.reload(); // Sayfayı yenileyerek güncel ürün listesini göster
     });
 
-
     card.appendChild(deleteButton);
-
 
     return card;
 }
+
 
 function removeProduct(productId) {
     const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -62,7 +79,6 @@ window.onload = function() {
         const uniqueProducts = Array.from(new Set(savedProducts));
         uniqueProducts.forEach(product => {
             const productCount = savedProducts.filter(item => item === product).length;
-
             // API'ye GET isteği atalım
             fetch(`${apiUrl}${product}/`, {
                 method: 'GET',
@@ -76,8 +92,9 @@ window.onload = function() {
                 }
                 return response.json();
             })
-            .then(data => {
-                const card = createProductCard(data, productCount); // Verilere göre kartı oluşturalım
+            .then(data => { 
+                const card = createPrdList(Object.values(data), productCount); // Verilere göre kartı oluşturalım
+                
                 productList.appendChild(card);
             })
             .catch(error => {
