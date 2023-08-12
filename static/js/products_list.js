@@ -6,7 +6,7 @@ function saveData(productId) {
         alert('Geçerli bir ürün adedi seçiniz.');
         return;
     }
-
+ 
     const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
     for (let i = 0; i < selectedQuantity; i++) {
         cartItems.push(productId);
@@ -93,4 +93,4 @@ async function displayProducts() {
 
 
 window.onload = displayProducts;
-     
+    

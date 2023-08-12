@@ -1,4 +1,6 @@
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from django.contrib.auth.hashers import make_password, check_password
+from rest_framework.decorators import api_view, renderer_classes
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from rest_framework.parsers import MultiPartParser
@@ -153,7 +155,7 @@ class RegisterAPI(generics.GenericAPIView):
         return render(request, "login.html")
     
 
-
+@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 class ProductListCreateAPIView(APIView):
     def get(self,request):
         products = Product.objects.all() 
@@ -172,7 +174,7 @@ class ProductListCreateAPIView(APIView):
             product_data["images"] = image_serializer.data
             
             products_data.append(product_data)
-        return Response(data=products_data)
+        return Response(data=products_data ,status=status.HTTP_200_OK)
 
 
     parser_classes = [MultiPartParser]
@@ -183,7 +185,6 @@ class ProductListCreateAPIView(APIView):
             return redirect('home-page') 
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -199,7 +200,7 @@ class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
         'product_images': image_serializer.data,
         'product': product_serializer.data
         }
-        return Response(data)
+        return Response(data , status=status.HTTP_200_OK)
     
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -208,9 +209,9 @@ class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
             id = self.kwargs["id"]
             prod = Product.objects.filter(id=id)
             prod.delete()
-            return Response({"success" : "Ürün Bşarıyla  Silindi."})
+            return JsonResponse( status=status.HTTP_200_OK)
         except Exception as e : 
-            return JsonResponse({"error" : "Ürün silerken Bir Hata Oluştu."})
+            return Response({"error" : "Ürün silerken Bir Hata Oluştu."},status=status.HTTP_400_BAD_REQUEST )
 
 
 
@@ -221,9 +222,9 @@ class update_permission(APIView):
             product = Product.objects.get(id=id)
             permission = not product.permission
             Product.objects.filter(id=id).update(permission=permission)
-            return JsonResponse({'message': 'İşlem başarılı'})
+            return Response({'message': 'İşlem başarılı'},status=status.HTTP_200_OK)
         except Product.DoesNotExist:
-            return JsonResponse({'message': 'Ürün bulunamadı'}, status=404)
+            return Response({'message': 'Ürün bulunamadı'}, status=404)
         
 
 class UpdateUserAPIView(APIView):
@@ -271,13 +272,15 @@ def send_email_example(userEmail , token):
 class SendEmail(APIView) : 
     def post(self,request) :
         try:
+            token = request.data.get("token")   
+            update = updateCode.objects.get(token = token)
+            user = CustomUser.objects.get(id = update.user_id)
+            email = user.email
+        except updateCode.DoesNotExist:
             email = request.data.get("email")   
             user = CustomUser.objects.get(email=email)
-        except :
-               token = request.data.get("token")   
-               update = updateCode.obejct.filter(token = token)
-               user = CustomUser.objects.get(id = update.user_id)
-            
+        except Exception as e:
+            print("Hata oluştu:", str(e))             
         try:
             email_token = updateCode.objects.get(user=user)
             if not email_token.used and email_token.expire_date > timezone.now():

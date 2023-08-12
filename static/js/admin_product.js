@@ -3,17 +3,18 @@ function update_button(item_id) {
 
     $.ajax({
         url: "/update-permission/", 
+        dataType: 'json',
         type: "POST",
         headers: {
             "X-CSRFToken": csrfToken
         },
         success: function(response) {
-            alert(response.message); 
+            alert("response.message"); 
             window.location.reload(); 
         },
         data : {id : item_id},
         error: function(error) {
-            console.log(error);
+            console.log("error");
         }
         
     });
@@ -22,17 +23,19 @@ function Delete_button(item_id){
     var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
     $.ajax({
         url: "/api/products/" + item_id + "/" ,
+        dataType: 'json',
+
         type: "DELETE",
         headers: {
             "X-CSRFToken": csrfToken
         },
         success: function(response) {
-            alert(response.message); 
+            alert("response.message"); 
             window.location.reload(); 
         },
         data : {id : item_id},
         error: function(error) {
-            console.log(error);
+            console.log("error");
         }
 
     });

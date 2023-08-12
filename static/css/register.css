@@ -1,27 +1,76 @@
-/* style.css */
-
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f5f5;
+    background-color: black;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-}
+} 
 
 .register-container {
-    max-width: 400px;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: #ffffff;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    top: 30%;
+    left: 15%;
+    width: 400px;
+    padding: 75px;
+    transform: translate(-50%, -50%);
+    background-color: black;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 3px solid #43e486;
+}
+
+#username {
+    background: transparent;
+}
+
+#password {
+    background: transparent;
+}
+
+#email {
+    background: transparent;
+}
+
+input {
+    color: white;
+}
+
+h2 {
+
+    text-align: center;
+    color: white;
+}
+
+.register-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(69, 255, 193, 0.26), transparent);
+    z-index: -1;
+    animation: animate 6s linear infinite;
+}
+
+@keyframes animate {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 .register-title {
     text-align: center;
-    color: #3498db;
+    color: #43e486;
     font-size: 30px;
     font-weight: bold;
     margin-bottom: 30px;
@@ -57,24 +106,33 @@ input[type="password"] {
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus {
-    border-color: #3498db;
+    border-color: #43e486;
     outline: none;
 }
 
 .register_button {
     background-color: #27ae60;
     color: #fff;
+    position: absolute;
+    left: 40%;
     padding: 12px 24px;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    border-radius: 20px;
     font-size: 16px;
     transition: background-color 0.3s ease;
+    text-align: center;
 }
 
 .register_button:hover {
     background-color: #43e486;
 }
+
+.register-container input[type="text"],
+.register-container input[type="password"],
+.register-container input[type="email"] {
+  text-align: center;
+}
+
 
 
 
@@ -88,6 +146,6 @@ input[type="email"] {
 }
 
 input[type="email"]:focus {
-    border-color: #3498db;
+    border-color: #43e486;
     outline: none;
 }
