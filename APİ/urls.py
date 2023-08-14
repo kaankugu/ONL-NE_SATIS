@@ -14,7 +14,7 @@ urlpatterns = [
      path('products/',  showPrd,name="products"),
      path("register/",Register, name = "register"),
      path("sendEmail/", sendEmailPage ,name = "SendEmail"), 
-     path('products/admin',  showPrdAll,name="products-admin"),
+     path('products/admin',  showPrdAll ,name="products-admin"),
      path("api/all_user/", All_User.as_view() , name="all_user"),
      path('api/login/', custom_login.as_view(), name= 'login-api'),
      path('api/register/', RegisterAPI.as_view(), name='register-api'),
@@ -24,7 +24,7 @@ urlpatterns = [
      path('api/products/', ProductListCreateAPIView.as_view(), name='product-create'),
      path('update_user/', superuser_access_only(UpdateUserAPIView.as_view()), name='update_user'),
      path('update-permission/', admin_access_only(update_permission.as_view()), name= 'update-perm'),
-     path('api/products/<int:id>/', admin_access_only(ProductRetrieveUpdateDestroyAPIView.as_view()), name='product-detail'),
+     path('api/products/<int:id>/', admin_access_only(ProductRetrieveUpdateDestroyAPIView), name='product-detail'),
 
     ]
 

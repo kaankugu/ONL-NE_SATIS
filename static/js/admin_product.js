@@ -1,46 +1,44 @@
 function update_button(item_id) {
     var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
-    $.ajax({
-        url: "/update-permission/", 
-        dataType: 'json',
-        type: "POST",
+    fetch("/update-permission/", {
+        method: "POST",
         headers: {
-            "X-CSRFToken": csrfToken
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
         },
-        success: function(response) {
-            alert("response.message"); 
-            window.location.reload(); 
-        },
-        data : {id : item_id},
-        error: function(error) {
-            console.log("error");
-        }
-        
+        body: JSON.stringify({ id: item_id }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error(error);
     });
-    }
-function Delete_button(item_id){
-    var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-    $.ajax({
-        url: "/api/products/" + item_id + "/" ,
-        dataType: 'json',
-
-        type: "DELETE",
-        headers: {
-            "X-CSRFToken": csrfToken
-        },
-        success: function(response) {
-            alert("response.message"); 
-            window.location.reload(); 
-        },
-        data : {id : item_id},
-        error: function(error) {
-            console.log("error");
-        }
-
-    });
-
 }
+function delete_button(item_id) {
+    var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+    fetch("/api/products/" + item_id + "/", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify({ id: item_id }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+
  
 async function fetchProducts() {
     try {

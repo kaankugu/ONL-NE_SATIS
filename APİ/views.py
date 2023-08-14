@@ -155,7 +155,7 @@ class RegisterAPI(generics.GenericAPIView):
         return render(request, "login.html")
     
 
-@renderer_classes((TemplateHTMLRenderer, JSONRenderer))
+
 class ProductListCreateAPIView(APIView):
     def get(self,request):
         products = Product.objects.all() 
@@ -187,8 +187,8 @@ class ProductListCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = ProductSerializer
+class ProductRetrieveUpdateDestroyAPIView(APIView):
+    @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
     def get(self, request, *args, **kwargs):
         id = self.kwargs["id"]
         image =ProductImage.objects.filter(product_id = id)
@@ -201,9 +201,10 @@ class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
         'product': product_serializer.data
         }
         return Response(data , status=status.HTTP_200_OK)
-    
+    @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
+    @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
     def delete(self, request, *args, **kwargs):
         try:
             id = self.kwargs["id"]
