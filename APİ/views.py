@@ -67,15 +67,14 @@ def forgetPassword(request,token):
 def sendEmailPage(request):
     return render(request , "sendEmail.html")
 
-@admin_access_only
+
+
+
 def showPrdAll(request):
-    prod=Product.objects.all()
-    images = ProductImage.objects.all()
-    prod_images = {}
-    for product in prod:
-        images = ProductImage.objects.filter(product_id=product.id)
-        prod_images[product.id] = images
-    return render(request, 'admin_product.html', {'prod': prod , "image" : images})
+    return render(request, 'admin_product.html' )
+
+
+
 
 
 def showPrd(request):
@@ -187,8 +186,7 @@ class ProductListCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProductRetrieveUpdateDestroyAPIView(APIView):
-    @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
+class ProductRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     def get(self, request, *args, **kwargs):
         id = self.kwargs["id"]
         image =ProductImage.objects.filter(product_id = id)
@@ -201,17 +199,15 @@ class ProductRetrieveUpdateDestroyAPIView(APIView):
         'product': product_serializer.data
         }
         return Response(data , status=status.HTTP_200_OK)
-    @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
-    @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
     def delete(self, request, *args, **kwargs):
         try:
             id = self.kwargs["id"]
             prod = Product.objects.filter(id=id)
             prod.delete()
-            return JsonResponse( status=status.HTTP_200_OK)
-        except Exception as e : 
+            return Response( {"success" : "Ürün Başarı İle Silindi."}, status=status.HTTP_200_OK)
+        except Product.DoesNotExist:
             return Response({"error" : "Ürün silerken Bir Hata Oluştu."},status=status.HTTP_400_BAD_REQUEST )
 
 
@@ -223,9 +219,9 @@ class update_permission(APIView):
             product = Product.objects.get(id=id)
             permission = not product.permission
             Product.objects.filter(id=id).update(permission=permission)
-            return Response({'message': 'İşlem başarılı'},status=status.HTTP_200_OK)
+            return Response({'success': 'İşlem başarılı'} , status = status.HTTP_200_OK)
         except Product.DoesNotExist:
-            return Response({'message': 'Ürün bulunamadı'}, status=404)
+            return Response({'error' : 'Ürün bulunamadı'}, status=404)
         
 
 class UpdateUserAPIView(APIView):

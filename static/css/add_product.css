@@ -19,7 +19,7 @@ body {
   width: 50%;
   height: 50%;
   
-  margin: 0 auto;
+  margin: 0 auto; 
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -68,14 +68,6 @@ body {
   left: -10px;
   top: -1px;
 }
-
-
-
-
-
-
-
-
 
 .add_product button:hover {
   background-color: #0056b3; /* Düğme üzerine gelince rengini değiştir */

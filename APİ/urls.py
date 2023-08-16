@@ -23,8 +23,8 @@ urlpatterns = [
      path("api/updatePassword/", updataPassword.as_view() ,name = "updataPassword"), 
      path('api/products/', ProductListCreateAPIView.as_view(), name='product-create'),
      path('update_user/', superuser_access_only(UpdateUserAPIView.as_view()), name='update_user'),
-     path('update-permission/', admin_access_only(update_permission.as_view()), name= 'update-perm'),
-     path('api/products/<int:id>/', admin_access_only(ProductRetrieveUpdateDestroyAPIView), name='product-detail'),
+     path('update-permission/', update_permission.as_view(), name= 'update-perm'),
+     path('api/products/<int:id>/', ProductRetrieveUpdateDestroyAPIView.as_view(), name='product-detail'),
 
     ]
 

@@ -1,44 +1,53 @@
 function update_button(item_id) {
     var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    console.log("bura günceleme")
 
-    fetch("/update-permission/", {
-        method: "POST",
+    $.ajax({
+        url: "/update-permission/", 
+        dataType: 'json',
+        type: "POST",
         headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
+
+            "X-CSRFToken": csrfToken
         },
-        body: JSON.stringify({ id: item_id }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message);
-        window.location.reload();
-    })
-    .catch(error => {
-        console.error(error);
-    });
-}
-function delete_button(item_id) {
+        success: function(response) {
+            window.location.reload(); 
+        },
+        data : {id : item_id},
+
+        error: function(error) {
+            
+
+
+        }
+        
+    }); 
+    }
+function Delete_button(item_id){
+    console.log("bura silme")
     var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    $.ajax({
+        url: "/api/products/" + item_id + "/" ,
+        dataType: 'json',
 
-    fetch("/api/products/" + item_id + "/", {
-        method: "DELETE",
+        type: "DELETE",
         headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
+            "X-CSRFToken": csrfToken
         },
-        body: JSON.stringify({ id: item_id }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message);
-        window.location.reload();
-    })
-    .catch(error => {
-        console.error(error);
-    });
-}
+        success: function(response) {
+            alert("Ürün Başarı İle Silindi."); 
+            window.location.reload();
+            
+        },
+        data : {id : item_id},
+        error: function(error) {
+            alert("Ürün Silinirken Bir hata Oluştu."); 
 
+        }
+
+    });
+
+}
  
 async function fetchProducts() {
     try {
