@@ -80,6 +80,9 @@ header {
     margin-right: 1rem;
     transition: transform 0.3s ease-in-out;
 }
+.image-row img:hover {
+    transform: scale(1.19);
+}
 
 .product-images {
     display: flex;

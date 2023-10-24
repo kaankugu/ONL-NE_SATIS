@@ -294,7 +294,6 @@ class SendEmail(APIView) :
                 'used': False,
             }
         )
-
         response_data = {
         "success": True,
         "message": "E-posta gönderildi.",
