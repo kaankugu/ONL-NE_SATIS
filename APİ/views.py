@@ -12,16 +12,16 @@ from django.contrib.auth import authenticate
 from .serializers import  UserSerializer
 from django.contrib.auth  import logout
 from django.core.mail import send_mail
-from django.http import  JsonResponse
+from django.http import JsonResponse
 from rest_framework import generics
 from django.conf import settings
+from django.urls import reverse
 from APİ.serializers import *
 from APİ.decorator import *
 import  datetime
 import  random
 import string
 import jwt
-
 
 @login_required(login_url='/login/')
 def bag(request):
@@ -337,3 +337,17 @@ class updataPassword(APIView):
             return Response({"error": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
